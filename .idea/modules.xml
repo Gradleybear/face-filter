@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android-face-filters.iml" filepath="$PROJECT_DIR$/Android-face-filters.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Android-face-filters-master-b6c0aba5c269b5a7db9b02b89941904b81a64cd9.iml" filepath="$PROJECT_DIR$/Android-face-filters-master-b6c0aba5c269b5a7db9b02b89941904b81a64cd9.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+    </modules>
+  </component>
+</project>
