@@ -65,7 +65,7 @@ public class FaceFilterActivity extends AppCompatActivity {
     private static final String TAG = "FaceTracker";
 
     private CameraSource mCameraSource = null;
-    private int typeFace = 0;
+    private int typeFace;
   //  private int typeFlash = 0;
   //  private boolean flashmode = false;
     private Camera camera;
@@ -260,7 +260,8 @@ public class FaceFilterActivity extends AppCompatActivity {
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (rc == PackageManager.PERMISSION_GRANTED) {
+        int ep = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (rc == PackageManager.PERMISSION_GRANTED && ep == PackageManager.PERMISSION_GRANTED  ) {
             createCameraSource();
         } else {
             requestCameraPermission();
@@ -317,7 +318,9 @@ public class FaceFilterActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(getBaseContext(), "Image Not saved",
                                     Toast.LENGTH_SHORT).show();
-                            return;
+
+
+                            return ;
                         }
 
                         ByteArrayOutputStream ostream = new ByteArrayOutputStream();
@@ -373,6 +376,7 @@ public class FaceFilterActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * Handles the requesting of the camera permission.  This includes
      * showing a "Snackbar" message of why the permission is needed then
@@ -381,7 +385,7 @@ public class FaceFilterActivity extends AppCompatActivity {
     private void requestCameraPermission() {
         Log.w(TAG, "Camera permission is not granted. Requesting permission");
 
-        final String[] permissions = new String[]{Manifest.permission.CAMERA};
+        final String[] permissions = new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA)) {
@@ -441,7 +445,7 @@ public class FaceFilterActivity extends AppCompatActivity {
                 .setRequestedPreviewSize(640, 480)
                 .setAutoFocusEnabled(true)
                 .setFacing(CameraSource.CAMERA_FACING_FRONT)
-                .setRequestedFps(70.0f)
+                .setRequestedFps(30.0f)
                 .build();
         //observer.start();
         /*
