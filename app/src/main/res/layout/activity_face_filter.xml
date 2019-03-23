@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp">
 
-               <!-- <ImageButton
+                <!-- <ImageButton
                     android:id="@+id/change"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -59,7 +59,11 @@
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/flash" /> -->
 
-       <ImageButton
+
+
+
+
+                <ImageButton
                     android:id="@+id/camera"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -68,6 +72,12 @@
                     android:background="#00000000"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/btn_camera_all" />
+                <Button
+                    android:id="@+id/buttonShareImage"
+                    android:layout_width="70sp"
+                    android:layout_height="55sp"
+                    android:layout_marginEnd="103dp"
+                    android:text="Share Image" />
 
                 <ImageButton
                     android:id="@+id/face"

@@ -22,8 +22,6 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.Size;
 import com.gsrathoreniks.facefilter.camera.CameraSourcePreview;
-
-import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.gsrathoreniks.facefilter.camera.GraphicOverlay;
 
@@ -117,6 +115,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
            op = bitmap;
            op = Bitmap.createScaledBitmap(op, (int) scaleX(face.getWidth()),
                    (int) scaleY(((bitmap.getHeight() * face.getWidth()) / bitmap.getWidth())), false);
+
            postInvalidate();
 
     }
@@ -146,6 +145,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         //float bottom = y + yOffset;
         //canvas.drawRect(left, top, right, bottom, mBoxPaint);
         canvas.drawBitmap(op, left, top, new Paint());
+
     }
 
     private float getNoseAndMouthDistance(PointF nose, PointF mouth) {
