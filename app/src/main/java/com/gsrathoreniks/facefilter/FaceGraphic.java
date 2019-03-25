@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package com.gsrathoreniks.facefilter;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PointF;
-import android.util.Size;
-import com.gsrathoreniks.facefilter.camera.CameraSourcePreview;
+//import android.graphics.PointF;
+//import android.util.Size;
+//import com.gsrathoreniks.facefilter.camera.CameraSourcePreview;
 import com.google.android.gms.vision.face.Face;
 import com.gsrathoreniks.facefilter.camera.GraphicOverlay;
 
@@ -30,13 +29,13 @@ import com.gsrathoreniks.facefilter.camera.GraphicOverlay;
  * graphic overlay view.
  */
 class FaceGraphic extends GraphicOverlay.Graphic {
-    private static final float FACE_POSITION_RADIUS = 10.0f;
-    private static final float ID_TEXT_SIZE = 40.0f;
-    private static final float ID_Y_OFFSET = 50.0f;
-    private static final float ID_X_OFFSET = -50.0f;
-    private static final float GENERIC_POS_OFFSET = 20.0f;
-    private static final float GENERIC_NEG_OFFSET = -20.0f;
-    private static final float BOX_STROKE_WIDTH = 5.0f;
+   // private static final float FACE_POSITION_RADIUS = 10.0f;
+ //   private static final float ID_TEXT_SIZE = 40.0f;
+ //   private static final float ID_Y_OFFSET = 50.0f;
+ //   private static final float ID_X_OFFSET = -50.0f;
+ //   private static final float GENERIC_POS_OFFSET = 20.0f;
+//    private static final float GENERIC_NEG_OFFSET = -20.0f;
+  //  private static final float BOX_STROKE_WIDTH = 5.0f;
 
     private static final int MASK[] = {
           //  R.drawable.transparent,
@@ -76,8 +75,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private volatile Face mFace;
     private int mFaceId;
    // private float mFaceHappiness;
-    private Bitmap bitmap;
-    private Bitmap op;
+    Bitmap bitmap;
+    Bitmap op;
 
     FaceGraphic(GraphicOverlay overlay,int c) {
         super(overlay);
@@ -117,6 +116,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
                    (int) scaleY(((bitmap.getHeight() * face.getWidth()) / bitmap.getWidth())), false);
 
            postInvalidate();
+           bitmap.recycle();
 
     }
 
@@ -141,14 +141,17 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float yOffset = scaleY(face.getHeight() / 2.0f);
         float left = x - xOffset;
         float top = y - yOffset;
+
         //float right = x + xOffset;
         //float bottom = y + yOffset;
         //canvas.drawRect(left, top, right, bottom, mBoxPaint);
         canvas.drawBitmap(op, left, top, new Paint());
 
     }
-
+/*
     private float getNoseAndMouthDistance(PointF nose, PointF mouth) {
         return (float) Math.hypot(mouth.x - nose.x, mouth.y - nose.y);
     }
+*/
+
 }

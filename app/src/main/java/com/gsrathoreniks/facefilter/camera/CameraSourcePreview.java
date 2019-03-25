@@ -30,34 +30,26 @@ import java.io.IOException;
 
 public class CameraSourcePreview extends ViewGroup {
     private static final String TAG = "CameraSourcePreview";
-
     private Context mContext;
     private SurfaceView mSurfaceView;
     private boolean mStartRequested;
     private boolean mSurfaceAvailable;
     private CameraSource mCameraSource;
-
     private GraphicOverlay mOverlay;
-
 
     public CameraSourcePreview(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         mStartRequested = false;
         mSurfaceAvailable = false;
-
         mSurfaceView = new SurfaceView(context);
         mSurfaceView.getHolder().addCallback(new SurfaceCallback());
         addView(mSurfaceView);
     }
 
-
-
-
     public void start(CameraSource cameraSource) throws IOException {
         if (cameraSource == null) {
             stop();
-
         }
 
         mCameraSource = cameraSource;

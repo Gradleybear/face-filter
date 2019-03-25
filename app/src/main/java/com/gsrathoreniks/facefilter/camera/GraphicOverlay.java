@@ -52,6 +52,8 @@ public class GraphicOverlay extends View {
     private int mFacing = CameraSource.CAMERA_FACING_FRONT;
     private Set<Graphic> mGraphics = new HashSet<>();
 
+
+
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay.  Subclass
      * this and implement the {@link Graphic#draw(Canvas)} method to define the

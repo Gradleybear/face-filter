@@ -6,25 +6,21 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Typeface;
-import android.net.Uri;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.Xml;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -37,20 +33,18 @@ import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.Landmark;
+import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
 import com.gsrathoreniks.facefilter.camera.CameraSourcePreview;
 import com.gsrathoreniks.facefilter.camera.GraphicOverlay;
-
-import org.xmlpull.v1.XmlPullParser;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import static android.view.View.GONE;
 
 public class FaceFilterActivity extends AppCompatActivity {
-    TextGraphic mTextGraphic;
 
 
     private final Thread observer = new Thread("observer") {
@@ -87,7 +81,6 @@ public class FaceFilterActivity extends AppCompatActivity {
           //  R.id.glasses3,
           //  R.id.glasses4,
            // R.id.glasses5,
-
             R.id.morgan2,
             R.id.fill,
             R.id.moustache,
@@ -138,60 +131,7 @@ public class FaceFilterActivity extends AppCompatActivity {
                 findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background_select);
             }
         });
-
-       ImageButton hair = (ImageButton) findViewById(R.id.hair);
-        hair.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-               findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background);
-             typeFace = 1;
-             findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background_select);
-          }
-       });*/
-
-      /* ImageButton op = (ImageButton) findViewById(R.id.op);
-       op.setOnClickListener(new View.OnClickListener() {
-          public void onClick(View v) {
-              findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background);
-              typeFace = 2;
-                findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background_select);
-           }
-        }); */
-
-      /*  ImageButton snap = (ImageButton) findViewById(R.id.snap);
-       snap.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-               findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background);
-              typeFace = 3;
-              findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background_select);
-          }
-        });
-
-        ImageButton glasses2 = (ImageButton) findViewById(R.id.glasses2);
-       glasses2.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-             findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background);
-                typeFace = 4;
-                findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background_select);
-            }
-       });
-
-       ImageButton glasses3 = (ImageButton) findViewById(R.id.glasses3);
-        glasses3.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-               findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background);
-                typeFace = 5;
-               findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background_select);
-            }
-        }); */
-
-     /*  ImageButton glasses4 = (ImageButton) findViewById(R.id.glasses4);
-        glasses4.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background);
-                typeFace = 6;
-                findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background_select);
-            }
-        });*/
+*/
 
 
 
@@ -262,11 +202,8 @@ public class FaceFilterActivity extends AppCompatActivity {
         camera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 takeImage();
-
             }
         });
-
-
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
@@ -281,22 +218,24 @@ public class FaceFilterActivity extends AppCompatActivity {
 
     private void takeImage() {
         try{
-            //android.hardware.Camera.open(android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
-                 //releaseCameraSource();
-            //releaseCamera();
-            //openCamera(CameraInfo.CAMERA_FACING_BACK);
-            //setUpCamera(camera);
-            //Thread.sleep(1000);
+            //android.hardware.Camera.open(android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK)
+           //     releaseCameraSource();
+           // releaseCamera();
+         //  openCamera(android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
+         //   setUpCamera(camera);
+         //   Thread.sleep(1000);
             mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
                 private File imageFile;
                  @Override
                public void onPictureTaken(byte[] bytes) {
                     try {
-                      //  Context context = getApplicationContext();
+                    Context context = getApplicationContext();
                         // convert byte array into bitmap
                         Bitmap loadedImage = null;
                         Bitmap rotatedBitmap = null;
-                        loadedImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        BitmapFactory.Options opt = new BitmapFactory.Options();
+                        opt.inMutable = true;
+                        loadedImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length,opt);
                         // rotate Image
                         Matrix rotateMatrix = new Matrix();
                         rotateMatrix.postRotate(getWindowManager().getDefaultDisplay().getRotation());
@@ -304,24 +243,43 @@ public class FaceFilterActivity extends AppCompatActivity {
                                 loadedImage.getWidth(), loadedImage.getHeight(),
                                 rotateMatrix, false);
 
-                        // GraphicFaceTracker mGraphicFaceTracker = new GraphicFaceTracker( mGraphicOverlay);
-                       /* FaceDetector detector = new FaceDetector.Builder(context)
+                        rotateMatrix.reset();
+
+                       GraphicFaceTracker mGraphicFaceTracker = new GraphicFaceTracker( mGraphicOverlay);
+                    /*    FaceDetector detector = new FaceDetector.Builder(context)
                                 .setTrackingEnabled(false)
                                 .setLandmarkType(FaceDetector.ALL_LANDMARKS)
-                                .build();
+                                .build();*/
+                        FaceDetector detector = new FaceDetector.Builder(context)
+                                .setProminentFaceOnly(true)
+                                .build()
+                                ;
                         Frame frame = new Frame.Builder().setBitmap( rotatedBitmap).build();
-                        SparseArray<Face> faces = detector.detect(frame);
+
+                     //  SparseArray  <Face> faces = detector.detect(frame);
                         FaceGraphic mFaceGraphic = new FaceGraphic(mGraphicOverlay, typeFace);
+                          Canvas canvas = new Canvas(rotatedBitmap);
+                       // for (int i = 0; i < faces.size(); ++i) {
+                       //     Face face = faces.valueAt(i);
+                       //   for (Landmark landmark : face.getLandmarks()) {
 
-                        for (int i = 0; i < faces.size(); ++i) {
-                            Face face = faces.valueAt(i);
-                            for (Landmark landmark : face.getLandmarks()) {
-                                mFaceGraphic.updateFace(face, typeFace);
 
 
-                            }
-                        }*/
 
+                           /*     mFaceGraphic.updateFace(face, typeFace);
+                                float x = (face.getPosition().x + face.getWidth() / 2);
+                                float y = (face.getPosition().y + face.getHeight() / 2);
+                                float xOffset = (face.getWidth() / 2.0f);
+                                float yOffset = (face.getHeight() / 2.0f);
+                                float left = x - xOffset;
+                                float top = y - yOffset;
+                                canvas.drawBitmap(mFaceGraphic.op, left, top, new Paint());*/
+
+                          //  }
+                      //  }
+
+
+                        detector.release();
 
                         String state = Environment.getExternalStorageState();
                         File folder = null;
@@ -341,7 +299,7 @@ public class FaceFilterActivity extends AppCompatActivity {
                             java.util.Date date = new java.util.Date();
                             imageFile = new File(folder.getAbsolutePath()
                                     + File.separator
-                                    //+ new Timestamp(date.getTime()).toString()
+                                    + new Timestamp(date.getTime()).toString()
                                     + "Image.jpg");
 
                             imageFile.createNewFile();
@@ -363,7 +321,8 @@ public class FaceFilterActivity extends AppCompatActivity {
                         fout.write(ostream.toByteArray());
                         fout.close();
                         ContentValues values = new ContentValues();
-
+                            rotatedBitmap.recycle();
+                            loadedImage.recycle();
                         values.put(MediaStore.Images.Media.DATE_TAKEN,
                                 System.currentTimeMillis());
                         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
@@ -371,8 +330,11 @@ public class FaceFilterActivity extends AppCompatActivity {
                                 imageFile.getAbsolutePath());
 
                         setResult(Activity.RESULT_OK); //add this
+
                       //  finish();
                      //   onPause();
+
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -449,7 +411,7 @@ public class FaceFilterActivity extends AppCompatActivity {
     private void createCameraSource() {
 
         Context context = getApplicationContext();
-        FaceDetector detector = new FaceDetector.Builder(context)
+      FaceDetector detector = new FaceDetector.Builder(context)
                 .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
                 .setLandmarkType(FaceDetector.ALL_LANDMARKS)
                 .setMode(FaceDetector.ACCURATE_MODE)
@@ -459,7 +421,7 @@ public class FaceFilterActivity extends AppCompatActivity {
                 new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
                         .build());
 
-        //new MultiProcessor.Builder<>(new GraphicTextTrackerFactory()).build();
+        new MultiProcessor.Builder<>(new GraphicTextTrackerFactory()).build();
 
         if (!detector.isOperational()) {
             // Note: The first time that an app using face API is installed on a device, GMS will
@@ -474,16 +436,18 @@ public class FaceFilterActivity extends AppCompatActivity {
         }
 
         mCameraSource = new CameraSource.Builder(context, detector)
-                .setRequestedPreviewSize(640, 480)
+                .setRequestedPreviewSize(320 ,240)
                 .setAutoFocusEnabled(true)
                 .setFacing(CameraSource.CAMERA_FACING_FRONT)
                 .setRequestedFps(15.0f)
                 .build();
-        //observer.start();
+
         /*
         TextGraphic mTextGraphic = new TextGraphic(mGraphicOverlay);
         mGraphicOverlay.add(mTextGraphic);
         mTextGraphic.updateText(2);*/
+
+
     }
 
     /**
@@ -514,6 +478,7 @@ public class FaceFilterActivity extends AppCompatActivity {
         super.onDestroy();
         if (mCameraSource != null) {
             mCameraSource.release();
+           finish();
         }
     }
 
@@ -687,6 +652,7 @@ public class FaceFilterActivity extends AppCompatActivity {
         @Override
         public void onDone() {
             mOverlay.remove(mFaceGraphic);
+
         }
     }
 
