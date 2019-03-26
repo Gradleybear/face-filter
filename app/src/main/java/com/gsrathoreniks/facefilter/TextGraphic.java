@@ -50,15 +50,15 @@ class TextGraphic extends GraphicOverlay.Graphic {
      */
     @Override
    public void draw(Canvas canvas) {
-      /*  DateFormat df = new SimpleDateFormat("HH:mm");
+        DateFormat df = new SimpleDateFormat("HH:mm");
         String date = df.format(Calendar.getInstance().getTime());
-        Bitmap cc = drawTextBitmap(date, Color.WHITE,100,150,false,500,500);
-        canvas.drawBitmap(cc, 0, 10, new Paint());
-        cc.recycle(); //added to reduce size
-      */
+       // Bitmap cc = drawTextBitmap(date, Color.WHITE,100,150,false,500,500);
+       // canvas.drawBitmap(cc, 0, 10, new Paint());
+      //  cc.recycle(); //added to reduce size
+
     }
 
-    public static Bitmap drawTextBitmap(String string, int color, int alpha, int size, boolean underline, int width , int height) {
+  /*  public static Bitmap drawTextBitmap(String string, int color, int alpha, int size, boolean underline, int width , int height) {
         Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
        /* Canvas canvas = new Canvas(result);
         //canvas.drawBitmap();
@@ -69,8 +69,8 @@ class TextGraphic extends GraphicOverlay.Graphic {
         paint.setAntiAlias(true);
         paint.setUnderlineText(underline);
         canvas.drawText(string, 100, 150, paint);
-        result.recycle(); //added to reduce size*/
+        result.recycle(); //added to reduce size
         return result;
-   }
+   }*/
 
 }
