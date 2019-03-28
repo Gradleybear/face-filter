@@ -29,28 +29,31 @@ import com.gsrathoreniks.facefilter.camera.GraphicOverlay;
  * graphic overlay view.
  */
 class FaceGraphic extends GraphicOverlay.Graphic {
-   // private static final float FACE_POSITION_RADIUS = 10.0f;
- //   private static final float ID_TEXT_SIZE = 40.0f;
- //   private static final float ID_Y_OFFSET = 50.0f;
- //   private static final float ID_X_OFFSET = -50.0f;
- //   private static final float GENERIC_POS_OFFSET = 20.0f;
-//    private static final float GENERIC_NEG_OFFSET = -20.0f;
-  //  private static final float BOX_STROKE_WIDTH = 5.0f;
+   /*
+ private static final float FACE_POSITION_RADIUS = 10.0f;
+ private static final float ID_TEXT_SIZE = 40.0f;
+ private static final float ID_Y_OFFSET = 50.0f;
+ private static final float ID_X_OFFSET = -50.0f;
+ private static final float GENERIC_POS_OFFSET = 20.0f;
+ private static final float GENERIC_NEG_OFFSET = -20.0f;
+ private static final float BOX_STROKE_WIDTH = 5.0f;
+ */
 
     private static final int MASK[] = {
-          //  R.drawable.transparent,
-            //R.drawable.hair,
-          //  R.drawable.op,
-          //  R.drawable.snap,
-          //  R.drawable.glasses2,
-          //  R.drawable.glasses3,
-          //  R.drawable.glasses4,
-         //   R.drawable.glasses5,
-          //  R.drawable.mask,
-
-         //   R.drawable.wes,
+            /*
+              R.drawable.transparent,
+              R.drawable.hair,
+              R.drawable.op,
+              R.drawable.snap,
+              R.drawable.glasses2,
+              R.drawable.glasses3,
+              R.drawable.glasses4,
+              R.drawable.glasses5,
+              R.drawable.mask,
+              R.drawable.wes,
+              R.drawable.cowboylogan,
+              */
             R.drawable.morgan2,
-          //  R.drawable.cowboylogan,
             R.drawable.fill,
             R.drawable.moustache,
             R.drawable.cap
@@ -100,9 +103,11 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         op = bitmap;
     }
 
-   // void setId(int id) {
-    //    mFaceId = id;
-  //  }
+   /*
+    void setId(int id) {
+    mFaceId = id;
+    }
+    */
 
     /**
      * Updates the face instance from the detection of the most recent frame.  Invalidates the
@@ -114,7 +119,6 @@ class FaceGraphic extends GraphicOverlay.Graphic {
            op = bitmap;
            op = Bitmap.createScaledBitmap(op, (int) scaleX(face.getWidth()),
                    (int) scaleY(((bitmap.getHeight() * face.getWidth()) / bitmap.getWidth())), false);
-
            postInvalidate();
            bitmap.recycle();
 
@@ -124,13 +128,13 @@ class FaceGraphic extends GraphicOverlay.Graphic {
      * Draws the face annotations for position on the supplied canvas.
      */
     @Override
-
     public void draw(Canvas canvas) {
         Face face = mFace;
         if(face == null)  return;
         // Draws a circle at the position of the detected face, with the face's track id below.
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
+
         /*
         canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
         canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
@@ -143,17 +147,21 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float left = x - xOffset;
         float top = y - yOffset;
 
-        //float right = x + xOffset;
-        //float bottom = y + yOffset;
-        //canvas.drawRect(left, top, right, bottom, mBoxPaint);
+        /*
+        float right = x + xOffset;
+        float bottom = y + yOffset;
+        canvas.drawRect(left, top, right, bottom, mBoxPaint);
+        */
 
         canvas.drawBitmap(op, left, top, new Paint());
 
     }
-/*
-    private float getNoseAndMouthDistance(PointF nose, PointF mouth) {
-        return (float) Math.hypot(mouth.x - nose.x, mouth.y - nose.y);
-    }
-*/
+
+        /*
+          private float getNoseAndMouthDistance(PointF nose, PointF mouth)
+           {
+                 return (float) Math.hypot(mouth.x - nose.x, mouth.y - nose.y);
+            }
+        */
 
 }

@@ -15,10 +15,10 @@
  */
 package com.gsrathoreniks.facefilter;
 
-import android.graphics.Bitmap;
+//import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+//import android.graphics.Color;
+//import android.graphics.Paint;
 
 import com.gsrathoreniks.facefilter.camera.GraphicOverlay;
 
@@ -50,8 +50,8 @@ class TextGraphic extends GraphicOverlay.Graphic {
      */
     @Override
    public void draw(Canvas canvas) {
-        DateFormat df = new SimpleDateFormat("HH:mm");
-        String date = df.format(Calendar.getInstance().getTime());
+        //DateFormat df = new SimpleDateFormat("HH:mm");
+       // String date = df.format(Calendar.getInstance().getTime());
        // Bitmap cc = drawTextBitmap(date, Color.WHITE,100,150,false,500,500);
        // canvas.drawBitmap(cc, 0, 10, new Paint());
       //  cc.recycle(); //added to reduce size

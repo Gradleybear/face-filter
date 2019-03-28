@@ -54,6 +54,7 @@ public class GraphicOverlay extends View {
 
 
 
+
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay.  Subclass
      * this and implement the {@link Graphic#draw(Canvas)} method to define the
@@ -61,7 +62,6 @@ public class GraphicOverlay extends View {
      */
     public static abstract class Graphic {
         private GraphicOverlay mOverlay;
-
         public Graphic(GraphicOverlay overlay) {
             mOverlay = overlay;
         }
@@ -85,6 +85,7 @@ public class GraphicOverlay extends View {
          * scale.
          */
         public float scaleX(float horizontal) {
+
             return horizontal * mOverlay.mWidthScaleFactor;
         }
 
