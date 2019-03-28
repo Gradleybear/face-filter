@@ -18,6 +18,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.images.Size;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
@@ -426,12 +428,14 @@ public class FaceFilterActivity extends AppCompatActivity {
             // download completes on device.
             Log.w(TAG, "Face detector dependencies are not yet available.");
         }
+        Size displaySize = getScreenAspectRatio();
         mCameraSource = new CameraSource.Builder(context, detector)
-                .setRequestedPreviewSize(640,480)
+                .setRequestedPreviewSize(displaySize.getHeight(),displaySize.getWidth())
                 .setAutoFocusEnabled(true)
                 .setFacing(CameraSource.CAMERA_FACING_FRONT)
                 .setRequestedFps(15.0f)
                 .build();
+
 
         /*
         TextGraphic mTextGraphic = new TextGraphic(mGraphicOverlay);
@@ -650,5 +654,10 @@ public class FaceFilterActivity extends AppCompatActivity {
             mOverlay.remove(mFaceGraphic);
 
         }
+    }
+
+    private Size getScreenAspectRatio(){
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        return new Size(displayMetrics.widthPixels,displayMetrics.heightPixels);
     }
 }
