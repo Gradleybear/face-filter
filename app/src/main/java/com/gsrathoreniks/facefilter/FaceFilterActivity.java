@@ -67,6 +67,7 @@ public class FaceFilterActivity extends AppCompatActivity {
     String state = Environment.getExternalStorageState();
     private static final String TAG = "FaceTracker";
     private File imageFile;
+    Context mContext ;
     private CameraSource mCameraSource = null;
     public static int typeFace;
 
@@ -110,7 +111,7 @@ public class FaceFilterActivity extends AppCompatActivity {
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
         //mTextGraphic = new TextGraphic(mGraphicOverlay);
         //mGraphicOverlay.add(mTextGraphic);
-
+        mContext = this;
         ImageButton face = (ImageButton) findViewById(R.id.face);
         face.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -276,7 +277,7 @@ public class FaceFilterActivity extends AppCompatActivity {
                         }
                          detector.release();*/
 
-                       GetClickedImage.getFace(getApplicationContext(),rotatedBitmap);
+                       GetClickedImage.getFace(mContext,rotatedBitmap);
 
                         File folder = null;
                         if (state.contains(Environment.MEDIA_MOUNTED)) {

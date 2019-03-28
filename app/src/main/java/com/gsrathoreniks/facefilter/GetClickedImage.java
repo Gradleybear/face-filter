@@ -35,8 +35,6 @@ public class GetClickedImage {
             float x2 = x / 4 + face.getWidth();
             float y2 = y / 4 + face.getHeight();
             canvas.drawBitmap(mFaceGraphic.op, x2, y2, new Paint());
-
-
         }
         detector.release();
         return data;
