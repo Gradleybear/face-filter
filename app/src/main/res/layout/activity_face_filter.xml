@@ -60,9 +60,6 @@
                     app:srcCompat="@drawable/flash" /> -->
 
 
-
-
-
                 <ImageButton
                     android:id="@+id/camera"
                     android:layout_width="50dp"
@@ -72,12 +69,15 @@
                     android:background="#00000000"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/btn_camera_all" />
-                <Button
-                    android:id="@+id/buttonShareImage"
+
+              <!--  <Button
+                    android:id="@+id/btnshare"
                     android:layout_width="70sp"
                     android:layout_height="55sp"
                     android:layout_marginEnd="103dp"
-                    android:text="Share Image" />
+                    android:text="Share Image"
+                    android:background="@color/colorPrimaryDark"
+                    android:textColor="#ffff"/>-->
 
                 <ImageButton
                     android:id="@+id/face"
