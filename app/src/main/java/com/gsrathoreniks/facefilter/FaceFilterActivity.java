@@ -1,4 +1,5 @@
 package com.gsrathoreniks.facefilter;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,20 +13,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-//import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.images.Size;
@@ -36,6 +37,7 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.gsrathoreniks.facefilter.camera.CameraSourcePreview;
 import com.gsrathoreniks.facefilter.camera.GraphicOverlay;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,6 +46,8 @@ import java.sql.Timestamp;
 
 import static android.graphics.Bitmap.Config.ARGB_8888;
 import static android.view.View.GONE;
+
+//import android.graphics.Paint;
 
 public class FaceFilterActivity extends AppCompatActivity {
 
@@ -78,14 +82,14 @@ public class FaceFilterActivity extends AppCompatActivity {
   //  private boolean flashmode = false;
  //  private Camera mCamera;
     private static final int MASK[] = {
-           // R.id.no_filter,
-           // R.id.hair,
+          // R.id.no_filter,
+          // R.id.hair,
           //  R.id.op,
-           // R.id.snap,
+          // R.id.snap,
           //  R.id.glasses2,
           //  R.id.glasses3,
           //  R.id.glasses4,
-           // R.id.glasses5,
+          // R.id.glasses5,
             R.id.morgan2,
             R.id.fill,
             R.id.moustache,
@@ -246,10 +250,8 @@ public class FaceFilterActivity extends AppCompatActivity {
                         rotatedBitmap = Bitmap.createBitmap(loadedImage, 0, 0,
                                 loadedImage.getWidth(), loadedImage.getHeight(),
                                 rotateMatrix, false);
-                        opRotated = Bitmap.createBitmap(op, 0, 0,
-                                loadedImage.getWidth(), loadedImage.getHeight(),
-                                rotateMatrix, false);
-                        rotateMatrix.reset();
+
+
                         loadedImage=null;
 
 
@@ -316,8 +318,11 @@ public class FaceFilterActivity extends AppCompatActivity {
                         rotatedBitmap = resize(rotatedBitmap, 480, 640);
                        // rotatedBitmap = GetClickedImage.getFace(mContext,rotatedBitmap);
                         op = resize(op, 480, 640);
+                        opRotated = Bitmap.createBitmap(op, 0, 0,
+                                rotatedBitmap.getWidth(), rotatedBitmap.getHeight(),
+                                rotateMatrix, false);
                         loadedImage= overlay(rotatedBitmap,op);
-
+                        rotateMatrix.reset();
                         loadedImage.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                         FileOutputStream fout = new FileOutputStream(imageFile);
                         fout.write(ostream.toByteArray());
@@ -329,8 +334,21 @@ public class FaceFilterActivity extends AppCompatActivity {
                         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
                         values.put(MediaStore.MediaColumns.DATA,
                                 imageFile.getAbsolutePath());
+                    /*    Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_SEND);
+                        Uri photoUri;
+                        List <ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                        for (ResolveInfo resolveInfo : resInfoList) {
+                            String packageName = resolveInfo.activityInfo.com.gsrathoreniks.facefilter;
+                            context.grantUriPermission(com.gsrathoreniks.facefilter, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        }*/
+//                        Uri photoUri = FileProvider.getUriForFile(context,"com.gsrathoreniks.facefilter.provider",imageFile);
 
-                        Uri photoUri = FileProvider.getUriForFile(context,"com.gsrathoreniks.facefilter.provider",imageFile);
+
+                      photoUri = FileProvider.getUriForFile(context,
+                                BuildConfig.APPLICATION_ID + "com.gsrathoreniks.facefilter.provider", imageFile
+                                );
+
 
                         shareBitmap(loadedImage,"imageFile",  photoUri);
                             op.recycle();
