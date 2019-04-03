@@ -40,8 +40,10 @@ import com.gsrathoreniks.facefilter.camera.GraphicOverlay;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 
 import static android.graphics.Bitmap.Config.ARGB_8888;
@@ -76,7 +78,7 @@ public class FaceFilterActivity extends AppCompatActivity {
     private Context mContext ;
     private CameraSource mCameraSource = null;
     public static int typeFace;
-
+    private String mTempPhotoPath;
 
   //  private int typeFlash = 0;
   //  private boolean flashmode = false;
@@ -236,13 +238,13 @@ public class FaceFilterActivity extends AppCompatActivity {
                  @Override
                public void onPictureTaken(byte[] bytes) {
                     try {
-                 Context context = getApplicationContext();
+                 Context context = FaceFilterActivity.this;
                         // convert byte array into bitmap
-                       Bitmap loadedImage = null;
+                        Bitmap loadedImage = null;
                         Bitmap rotatedBitmap = null;
                         // opt.inMutable = true;
                         Bitmap opRotated =null;
-                       Bitmap op= screenShot(mGraphicOverlay);
+                        Bitmap op= screenShot(mGraphicOverlay);
                    loadedImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length,opt);
                         // rotate Image
                         Matrix rotateMatrix = new Matrix();
@@ -250,11 +252,7 @@ public class FaceFilterActivity extends AppCompatActivity {
                         rotatedBitmap = Bitmap.createBitmap(loadedImage, 0, 0,
                                 loadedImage.getWidth(), loadedImage.getHeight(),
                                 rotateMatrix, false);
-
-
                         loadedImage=null;
-
-
                         /*
                       GraphicFaceTracker mGraphicFaceTracker = new GraphicFaceTracker( mGraphicOverlay);
                         Frame frame = new Frame.Builder().setBitmap( rotatedBitmap).build();
@@ -283,8 +281,6 @@ public class FaceFilterActivity extends AppCompatActivity {
                             }
                         }
                          detector.release();*/
-
-
                         String state = Environment.getExternalStorageState();
                         File folder = null;
                         if (state.contains(Environment.MEDIA_MOUNTED)) {
@@ -305,15 +301,15 @@ public class FaceFilterActivity extends AppCompatActivity {
                                     + new Timestamp(date.getTime()).toString()
                                     + "Image.jpg");
                             imageFile.createNewFile();
+                            mTempPhotoPath= imageFile.getAbsolutePath();
+                            Toast.makeText(getBaseContext(), "Image saved successfully" +mTempPhotoPath ,
+                                    Toast.LENGTH_LONG).show();
                         }
                         else {
                             Toast.makeText(getBaseContext(), "Image Not saved",
                                     Toast.LENGTH_SHORT).show();
                                    return ;
                         }
-
-                        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-
                         //save image into gallery
                         rotatedBitmap = resize(rotatedBitmap, 480, 640);
                        // rotatedBitmap = GetClickedImage.getFace(mContext,rotatedBitmap);
@@ -323,45 +319,57 @@ public class FaceFilterActivity extends AppCompatActivity {
                                 rotateMatrix, false);
                         loadedImage= overlay(rotatedBitmap,op);
                         rotateMatrix.reset();
+                        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
                         loadedImage.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                         FileOutputStream fout = new FileOutputStream(imageFile);
                         fout.write(ostream.toByteArray());
-                        fout.flush();
-                        fout.close();
                         ContentValues values = new ContentValues();
                         values.put(MediaStore.Images.Media.DATE_TAKEN,
                                 System.currentTimeMillis());
                         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
                         values.put(MediaStore.MediaColumns.DATA,
                                 imageFile.getAbsolutePath());
-                    /*    Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_SEND);
-                        Uri photoUri;
-                        List <ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-                        for (ResolveInfo resolveInfo : resInfoList) {
-                            String packageName = resolveInfo.activityInfo.com.gsrathoreniks.facefilter;
-                            context.grantUriPermission(com.gsrathoreniks.facefilter, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        }*/
-//                        Uri photoUri = FileProvider.getUriForFile(context,"com.gsrathoreniks.facefilter.provider",imageFile);
+                        imageFile.setReadable(true, false);
+                        Uri screenshotUri = FileProvider.getUriForFile(context, "com.gsrathoreniks.facefilter.fileprovider",imageFile);
+                        try {
+                            InputStream stream = getContentResolver().openInputStream(screenshotUri);
+                        } catch (FileNotFoundException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        final Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                        sharingIntent.setType("image/jpeg");
+                        sharingIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                        startActivity(Intent.createChooser(sharingIntent, "Share image using"));
 
 
-                      photoUri = FileProvider.getUriForFile(context,
-                                BuildConfig.APPLICATION_ID + "com.gsrathoreniks.facefilter.provider", imageFile
-                                );
+           /*try {
 
 
-                        shareBitmap(loadedImage,"imageFile",  photoUri);
-                            op.recycle();
-                            loadedImage.recycle();
-                            rotatedBitmap.recycle();
-                            rotateMatrix.reset();
-                            opRotated.recycle();
-
-
+                       // Uri screenshotUri = Uri.parse(mTempPhotoPath);
+                    Uri screenshotUri = FileProvider.getUriForFile(context, "com.gsrathoreniks.facefilter.fileprovider",imageFile);
+                       final Intent sharingIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                       sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        sharingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        sharingIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                        sharingIntent.putExtra(Intent.EXTRA_TEXT, "Check out this new Captain Morgan look!");
+                        sharingIntent.setType("image/png");
+                        sharingIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                        startActivity(Intent.createChooser(sharingIntent, "Share image using"));
+                        sharingIntent.setType("image/png");
+                            context.startActivity(sharingIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();}*/
+                     //*   shareBitmap(loadedImage,"imageFile",  mTempPhotoPath);
                       //  finish();
-                     //   onPause();
-
-
+                     //   onPause();*//*
+                        fout.flush();
+                        fout.close();
+                        op.recycle();
+                        loadedImage.recycle();
+                        rotatedBitmap.recycle();
+                        rotateMatrix.reset();
+                        opRotated.recycle();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -369,6 +377,7 @@ public class FaceFilterActivity extends AppCompatActivity {
             });
 
         }catch (Exception ex){
+                        ex.printStackTrace();
         }
 
     }
@@ -465,7 +474,21 @@ public class FaceFilterActivity extends AppCompatActivity {
             // download completes on device.
             Log.w(TAG, "Face detector dependencies are not yet available.");
         }
-        Size displaySize = getScreenAspectRatio();
+
+
+       /* DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
+        Log.d(TAG,"Metrics Preview width and height="+width+" "+height);
+        mCameraSource = new CameraSource.Builder(context, detector)
+                .setRequestedPreviewSize(width, height)
+                .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                .setRequestedFps(30.0f)
+                .build();*/
+
+
+    Size displaySize = getScreenAspectRatio();
         mCameraSource = new CameraSource.Builder(context, detector)
                 .setRequestedPreviewSize(displaySize.getHeight(),displaySize.getWidth())
                 .setAutoFocusEnabled(true)
@@ -563,7 +586,7 @@ public class FaceFilterActivity extends AppCompatActivity {
 
 
     //////// this method share your image
-    private void shareBitmap (Bitmap bitmap,String fileName, Uri contentUri) {
+   /* private void shareBitmap (Bitmap bitmap,String fileName, String contentUri) {
 
         try {
             File file = new File(getApplicationContext().getCacheDir(), fileName + ".png");
@@ -581,7 +604,7 @@ public class FaceFilterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
 
     public Bitmap screenShot(View view) {

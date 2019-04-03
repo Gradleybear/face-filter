@@ -6,7 +6,6 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-feature android:name="android.hardware.camera" />
 
     <!-- <permission android:name="android.permission.FLASHLIGHT" /> -->
@@ -26,22 +25,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-       <provider
+        <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="example.gsrathoreniks.facefilter.fileprovider"
+            android:authorities="com.gsrathoreniks.facefilter.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-
-        <meta-data
-            android:name="android.support.FILE_PROVIDER_PATHS"
-            android:resource="@xml/file_provider_paths"/>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths"
+                tools:replace="android:resource"/>
+        </provider>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="face" />
-       </provider>
     </application>
 
   </manifest>
