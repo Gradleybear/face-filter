@@ -33,7 +33,7 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths"
-                tools:replace="android:resource"/>
+                />
         </provider>
         <meta-data
             android:name="com.google.android.gms.version"

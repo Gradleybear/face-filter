@@ -13,24 +13,28 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.images.Size;
 import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
@@ -149,6 +153,7 @@ public class FaceFilterActivity extends AppCompatActivity {
         morgan2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background);
+               // Frame frame = new Frame.Builder().setBitmap((R.id.morgan2)).build();
                 typeFace = 0;
                 findViewById(MASK[typeFace]).setBackgroundResource(R.drawable.round_background_select);
             }
@@ -298,7 +303,6 @@ public class FaceFilterActivity extends AppCompatActivity {
                             java.util.Date date = new java.util.Date();
                             imageFile = new File(folder.getAbsolutePath()
                                     + File.separator
-                                    + new Timestamp(date.getTime()).toString()
                                     + "Image.jpg");
                             imageFile.createNewFile();
                             mTempPhotoPath= imageFile.getAbsolutePath();
@@ -330,23 +334,17 @@ public class FaceFilterActivity extends AppCompatActivity {
                         values.put(MediaStore.MediaColumns.DATA,
                                 imageFile.getAbsolutePath());
                         imageFile.setReadable(true, false);
-                        Uri screenshotUri = FileProvider.getUriForFile(context, "com.gsrathoreniks.facefilter.fileprovider",imageFile);
-                        try {
-                            InputStream stream = getContentResolver().openInputStream(screenshotUri);
-                        } catch (FileNotFoundException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        final Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                        sharingIntent.setType("image/jpeg");
-                        sharingIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                        startActivity(Intent.createChooser(sharingIntent, "Share image using"));
 
+                      galarrayAddPic(context,mTempPhotoPath);
+                        fout.flush();
+                        fout.close();
+                        op.recycle();
+                        loadedImage.recycle();
+                        rotatedBitmap.recycle();
+                        rotateMatrix.reset();
+                        opRotated.recycle();
 
-           /*try {
-
-
-                       // Uri screenshotUri = Uri.parse(mTempPhotoPath);
+         try {     // Uri screenshotUri = Uri.parse(mTempPhotoPath);
                     Uri screenshotUri = FileProvider.getUriForFile(context, "com.gsrathoreniks.facefilter.fileprovider",imageFile);
                        final Intent sharingIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                        sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -359,20 +357,15 @@ public class FaceFilterActivity extends AppCompatActivity {
                         sharingIntent.setType("image/png");
                             context.startActivity(sharingIntent);
                         } catch (Exception e) {
-                            e.printStackTrace();}*/
+                            e.printStackTrace();}
                      //*   shareBitmap(loadedImage,"imageFile",  mTempPhotoPath);
                       //  finish();
                      //   onPause();*//*
-                        fout.flush();
-                        fout.close();
-                        op.recycle();
-                        loadedImage.recycle();
-                        rotatedBitmap.recycle();
-                        rotateMatrix.reset();
-                        opRotated.recycle();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                 }
             });
 
@@ -380,6 +373,16 @@ public class FaceFilterActivity extends AppCompatActivity {
                         ex.printStackTrace();
         }
 
+    }
+    public  Bitmap setBackground(Bitmap bmp1, Bitmap bmp2,CameraSourcePreview mPreview) {
+        setContentView(R.layout.morgan2_layout);
+        ImageView imgview = (ImageView) findViewById(R.id.imageView);
+        imgview.setBackground(getDrawable((R.drawable.morgan2)));
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, 0, 0, null);
+        return bmOverlay;
     }
 
     public static Bitmap overlay(Bitmap bmp1, Bitmap bmp2) {
@@ -408,7 +411,14 @@ public class FaceFilterActivity extends AppCompatActivity {
             return image;
         }
     }
-
+    private static void galarrayAddPic(Context context,String ImagePath)
+    {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(ImagePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        context.sendBroadcast(mediaScanIntent);
+    }
 
     /**
      * Handles the requesting of the camera permission.  This includes
