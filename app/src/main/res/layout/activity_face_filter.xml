@@ -194,6 +194,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/round_background"
                         android:scaleType="fitXY"
+                        android:onClick="launchMorgan2"
                         app:srcCompat="@drawable/morgan2" />
 
                     <!-- <ImageButton

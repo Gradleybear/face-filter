@@ -149,7 +149,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float left = x - xOffset;
         float top = y - yOffset;
         PointF point = mFace.getPosition();
-      switch (FaceFilterActivity.typeFace){
+     switch (FaceFilterActivity.typeFace){
           case 0:
           {
 
